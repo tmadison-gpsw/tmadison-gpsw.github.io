@@ -1,0 +1,138 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>HTML5 Playground</title>
+<script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="Stats.js"></script>
+<style type="text/css">
+	html,body {margin:0; padding:0;}
+	h1 {margin:0;
+		padding:0;
+		font-size:14px;
+	}
+</style>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+	var stats = new Stats();
+
+	// Align top-left
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+	
+	$('#stats').append( stats.domElement );
+	
+	setInterval( function () {
+	
+	    stats.update();
+	
+	}, 1000 / 60 );
+	
+	var counter = 0,
+			NUM_ITEMS = 500,
+			balls = [],
+			FRICTION = 0.95,
+			GRAVITY = 0.4,
+			colors = ['#e8574c' , '#f27b29', '#e5a51b' , '#d9cc3c' , '#399977'],
+			posX = 0,
+			posY = 0,
+			canvas = $("#stage").get(0),
+			context = canvas.getContext('2d');	
+
+	function drawBG(){
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		/*var gradient = context.createLinearGradient(0,0,0,window.innerHeight * 0.95);
+		gradient.addColorStop(0,'#1f1f1f');
+		gradient.addColorStop(1,'#000000');
+		context.fillStyle = gradient;
+		context.strokeStyle = gradient;*/
+		context.fillRect(0,0,window.innerWidth,window.innerHeight);
+	}
+	
+	function addBalls(){
+		
+		//changePos();
+		
+		for (var i=0;i < NUM_ITEMS; i ++){
+			var ball = {};
+			ball.vx = Math.random() * 30-15;
+			ball.vy = Math.random() * 30-15;
+			ball.x = posX;
+			ball.y = posY;
+			ball.radius = Math.random() * 3 + 1;
+			balls.push(ball);
+			ball.color = context.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+			context.beginPath();
+			context.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2, true);
+			context.closePath();
+			context.fill();
+		}
+		
+		
+		setInterval(onEnterFrame , 33);
+	}
+	
+	function changePos(e){
+		posX = e.clientX;
+		posY = e.clientY;
+	}
+	
+	function onEnterFrame(){	
+		context.clearRect(0,0,canvas.width,canvas.height);	
+		drawBG();
+	
+		for (var i=0;i < balls.length; i ++){
+		
+			var ball = balls[i];
+			ball.x += ball.vx;
+			ball.y += ball.vy;
+			ball.vy += GRAVITY;		
+			context.fillStyle = ball.color;
+			context.beginPath();
+			context.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2, true);
+			context.closePath();
+			context.fill();	
+			
+			if(ball.x > canvas.width || ball.x < 0 || ball.y < 0 || ball.y > canvas.height){
+				counter++;
+				if(counter > NUM_ITEMS){
+					counter = 0;
+					//changePos();
+				}
+
+			ball.vx = Math.random() * 30-15;
+			ball.vy = Math.random() * 30-15;	
+
+				ball.x = posX;
+				ball.y = posY;
+			}
+		}
+	}
+	
+	$(document).ready(function(){
+
+		$(document).mousemove( changePos );
+
+		drawBG();
+		addBalls();
+	});
+	
+	$(window).resize(drawBG);
+	
+});
+	
+</script>
+</head>
+<body>
+	<!-- <div id="d" style="background:url('isobar.gif') #FF3300 no-repeat 95px 10px; height:47px"></div> -->
+	<div id="stats"></div>
+	
+	<canvas id="stage" />
+</body>
+</html>
