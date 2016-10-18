@@ -23,15 +23,15 @@
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-	
+
 	$('#stats').append( stats.domElement );
-	
+
 	setInterval( function () {
-	
+
 	    stats.update();
-	
+
 	}, 1000 / 60 );
-	
+
 	var counter = 0,
 			NUM_ITEMS = 500,
 			balls = [],
@@ -41,7 +41,7 @@
 			posX = 0,
 			posY = 0,
 			canvas = $("#stage").get(0),
-			context = canvas.getContext('2d');	
+			context = canvas.getContext('2d');
 
 	function drawBG(){
 		canvas.width = window.innerWidth;
@@ -54,11 +54,11 @@
 		context.strokeStyle = gradient;*/
 		context.fillRect(0,0,window.innerWidth,window.innerHeight);
 	}
-	
+
 	function addBalls(){
-		
+
 		//changePos();
-		
+
 		for (var i=0;i < NUM_ITEMS; i ++){
 			var ball = {};
 			ball.vx = Math.random() * 30-15;
@@ -73,32 +73,32 @@
 			context.closePath();
 			context.fill();
 		}
-		
-		
-		setInterval(onEnterFrame , 33);
+
+
+		window.requestAnimationFrame(onEnterFrame);
 	}
-	
+
 	function changePos(e){
 		posX = e.clientX;
 		posY = e.clientY;
 	}
-	
-	function onEnterFrame(){	
-		context.clearRect(0,0,canvas.width,canvas.height);	
+
+	function onEnterFrame(){
+		context.clearRect(0,0,canvas.width,canvas.height);
 		drawBG();
-	
+
 		for (var i=0;i < balls.length; i ++){
-		
+
 			var ball = balls[i];
 			ball.x += ball.vx;
 			ball.y += ball.vy;
-			ball.vy += GRAVITY;		
+			ball.vy += GRAVITY;
 			context.fillStyle = ball.color;
 			context.beginPath();
 			context.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2, true);
 			context.closePath();
-			context.fill();	
-			
+			context.fill();
+
 			if(ball.x > canvas.width || ball.x < 0 || ball.y < 0 || ball.y > canvas.height){
 				counter++;
 				if(counter > NUM_ITEMS){
@@ -107,14 +107,15 @@
 				}
 
 			ball.vx = Math.random() * 30-15;
-			ball.vy = Math.random() * 30-15;	
+			ball.vy = Math.random() * 30-15;
 
 				ball.x = posX;
 				ball.y = posY;
 			}
 		}
+		window.requestAnimationFrame(onEnterFrame);
 	}
-	
+
 	$(document).ready(function(){
 
 		$(document).mousemove( changePos );
@@ -122,17 +123,17 @@
 		drawBG();
 		addBalls();
 	});
-	
+
 	$(window).resize(drawBG);
-	
+
 });
-	
+
 </script>
 </head>
 <body>
 	<!-- <div id="d" style="background:url('isobar.gif') #FF3300 no-repeat 95px 10px; height:47px"></div> -->
 	<div id="stats"></div>
-	
+
 	<canvas id="stage" />
 </body>
 </html>
